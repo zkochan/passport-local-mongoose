@@ -20,14 +20,14 @@ describe('issues', function () {
         }
         });
 
-        UserSchema.plugin(passportLocalMongoose, { usernameField: 'account.email' });
+        UserSchema.plugin(passportLocalMongoose, { usernameField: 'account.username' });
         var User = mongoose.model('ShouldSupportNestedFields_Issue_9', UserSchema);
 
-        User.register({ account : { email : 'nestedemail' }}, 'password', function (err, user) {
+        User.register({ account : { username : 'nestedusername' }, email: 'email'}, 'password', function (err, user) {
             assert.ifError(err);
             assert.ok(user);
 
-            User.findByUsername('nestedemail', function (err, user) {
+            User.findByUsername('nestedusername', function (err, user) {
                 assert.ifError(err);
                 assert.ok(user);
                 done();
@@ -46,7 +46,7 @@ describe('issues', function () {
         UserSchema.plugin(passportLocalMongoose);
         var User = mongoose.model('ShouldNotThrowIfPasswordOrSaltAreNotStored_Issue_27', UserSchema);
 
-            User.create({ username: 'hugo', name : 'Hugo Wiener', age : 143 }, function(err, user) {
+            User.create({ username: 'hugo', name : 'Hugo Wiener', age : 143, email: 'foo@bar.com' }, function(err, user) {
                 assert.ifError(err);
                 assert.ok(user);
 
@@ -73,7 +73,7 @@ describe('issues', function () {
         UserSchema.plugin(passportLocalMongoose, { selectFields : 'name' });
         var User = mongoose.model('ShouldNotThrowIfPasswordAndSaltAreNotSelected_Issue_27', UserSchema);
 
-            User.register(new User({ username : 'hugo' }), 'password', function(err, user) {
+            User.register(new User({ username : 'hugo', email: 'email' }), 'password', function(err, user) {
                 assert.ifError(err);
                 assert.ok(user);
 
@@ -111,7 +111,7 @@ describe('issues', function () {
                     var logins = [];
                     logins.push(login._id);
 
-                    User.register(new User({username: 'hugo', logins : logins}), 'password', function(err, user) {
+                    User.register(new User({username: 'hugo', logins : logins, email: 'email'}), 'password', function(err, user) {
                         assert.ifError(err);
                         assert.ok(user);
 
