@@ -1,7 +1,7 @@
 {
   "name": "passport-email",
   "description": "Mongoose plugin that simplifies building username and password login with Passport",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/passport-local-mongoose.js",
   "repository": "git://github.com/zkochan/passport-email.git",
   "author": "Zoltan Kochan",
