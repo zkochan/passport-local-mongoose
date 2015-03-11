@@ -1,54 +1,49 @@
-# Passport-Local Mongoose
-Passport-Local Mongoose is a [Mongoose](http://mongoosejs.com/) [plugin](http://mongoosejs.com/docs/plugins.html) 
-that simplifies building username and password login with [Passport](http://passportjs.org).
+# Passport-Email
+Passport-Email is a [Mongoose](http://mongoosejs.com/) [plugin](http://mongoosejs.com/docs/plugins.html) 
+that simplifies building username, email and password login with [Passport](http://passportjs.org).
 
 [![Build Status](https://travis-ci.org/zkochan/passport-email.png?branch=master)](https://travis-ci.org/zkochan/passport-email)
-[![Coverage Status](https://coveralls.io/repos/saintedlama/passport-local-mongoose/badge.png?branch=master)](https://coveralls.io/r/saintedlama/passport-local-mongoose?branch=master)
-
-## Tutorials
-Michael Herman gives a comprehensible walk through for setting up mongoose,
-passport, passport-local and passport-local-mongoose for user authentication in his blog post [User Authentication With Passport.js](http://mherman.org/blog/2013/11/11/user-authentication-with-passport-dot-js/)
-
+[![Coverage Status](https://coveralls.io/repos/zkochan/passport-email/badge.svg)](https://coveralls.io/r/zkochan/passport-email)
 
 ## Installation
 
-    $ npm install passport-local-mongoose
+    $ npm install passport-email
 
-Passport-Local Mongoose does not require `passport`, `passport-local` or `mongoose` dependencies directly but expects you
+Passport-Email does not require `passport`, `passport-local` or `mongoose` dependencies directly but expects you
 to have these dependencies installed.
 
 In case you need to install the whole set of dependencies
 
-    $ npm install passport passport-local mongoose passport-local-mongoose --save
+    $ npm install passport passport-local mongoose passport-email --save
 
 ## Usage
 
-### Plugin Passport-Local Mongoose
-First you need to plugin Passport-Local Mongoose into your User schema
+### Plugin Passport-Email
+First you need to plugin Passport-Email into your User schema
 
     var mongoose = require('mongoose'),
         Schema = mongoose.Schema,
-        passportLocalMongoose = require('passport-local-mongoose');
+        passportEmail = require('passport-email');
     
     var User = new Schema({});
     
-    User.plugin(passportLocalMongoose);
+    User.plugin(passportEmail);
     
     module.exports = mongoose.model('User', User);
 
-You're free to define your User how you like. Passport-Local Mongoose will add a username, hash and salt field to store
-the username, the hashed password and the salt value.
+You're free to define your User how you like. Passport-Email will add a username, email, hash and salt field to store
+the username, the email, the hashed password and the salt value.
 
-Additionally Passport-Local Mongoose adds some methods to your Schema. See the API Documentation section for more details.
+Additionally Passport-Email adds some methods to your Schema. See the API Documentation section for more details.
 
 ### Configure Passport/Passport-Local
 You should configure Passport/Passport-Local as described in [the Passport Guide](http://passportjs.org/guide/configure/).
 
-Passport-Local Mongoose supports this setup by implementing a `LocalStrategy` and serializeUser/deserializeUser functions.
+Passport-Email supports this setup by implementing a `LocalStrategy` and serializeUser/deserializeUser functions.
 
 To setup Passport-Local Mongoose use this code
 
-    // requires the model with Passport-Local Mongoose plugged in
+    // requires the model with Passport-Email plugged in
     var User = require('./models/user');
     
     // use static authenticate method of model in LocalStrategy
@@ -61,7 +56,7 @@ To setup Passport-Local Mongoose use this code
 Make sure that you have a mongoose connected to mongodb and you're done.
 
 #### Simplified Passport/Passport-Local Configuration
-Starting with version 0.2.1 passport-local-mongoose adds a helper method `createStrategy` as static method to your schema.
+Starting with version 0.2.1 passport-email adds a helper method `createStrategy` as static method to your schema.
 The `createStrategy` is responsible to setup passport-local `LocalStrategy` with the correct options.
 
     var User = require('./models/user');
@@ -77,10 +72,10 @@ for example "email" passport-local would still expect your frontend login form t
 instead of email. This can be configured for passport-local but this is double the work. So we got this shortcut implemented.
 
 ### Options
-When plugging in Passport-Local Mongoose plugin additional options can be provided to configure
+When plugging in Passport-Email plugin additional options can be provided to configure
 the hashing algorithm.
 
-    User.plugin(passportLocalMongoose, options);
+    User.plugin(passportEmail, options);
 
 __Main Options__
 
@@ -113,14 +108,14 @@ __Error Message Options__
 *Attention!* Changing any of the hashing options (saltlen, iterations or keylen) in a production environment will prevent that existing users to authenticate!
 
 ### Hash Algorithm
-Passport-Local Mongoose use the pbkdf2 algorithm of the node crypto library. 
+Passport-Email use the pbkdf2 algorithm of the node crypto library. 
 [Pbkdf2](http://en.wikipedia.org/wiki/PBKDF2) was chosen because platform independent
 (in contrary to bcrypt). For every user a generated salt value is saved to make
 rainbow table attacks even harder.
 
 ### Examples
 For a complete example implementing a registration, login and logout see the 
-[login example](https://github.com/saintedlama/passport-local-mongoose/tree/master/examples/login).
+[login example](https://github.com/zkochan/passport-email/tree/master/examples/login).
 
 ## API Documentation
 ### Instance methods
@@ -151,9 +146,9 @@ Static methods are exposed on the model constructor. For example to use createSt
 * authenticate() Generates a function that is used in Passport's LocalStrategy
 * serializeUser() Generates a function that is used by Passport to serialize users into the session
 * deserializeUser() Generates a function that is used by Passport to deserialize users into the session
-* register(user, password, cb) Convenience method to register a new user instance with a given password. Checks if username is unique. See [login example](https://github.com/saintedlama/passport-local-mongoose/tree/master/examples/login).
+* register(user, password, cb) Convenience method to register a new user instance with a given password. Checks if username is unique. See [login example](https://github.com/zkochan/passport-email/tree/master/examples/login).
 * findByUsername() Convenience method to find a user instance by it's unique username.
 * createStrategy() Creates a configured passport-local `LocalStrategy` instance that can be used in passport.
 
 ## License
-Passport-Local Mongoose is licenses under the [MIT license](http://opensource.org/licenses/MIT).
+Passport-Email is licenses under the [MIT license](http://opensource.org/licenses/MIT).
