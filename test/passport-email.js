@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var BadRequestError = require('../lib/badrequesterror');
-var passportLocalMongoose = require('../lib/passport-local-mongoose');
+var passportEmail = require('../lib/passport-email');
 var assert = require('assert');
 var expect = require('chai').expect;
 var mongotest = require('./mongotest');
 
 var DefaultUserSchema = new Schema();
-DefaultUserSchema.plugin(passportLocalMongoose);
+DefaultUserSchema.plugin(passportEmail);
 var DefaultUser = mongoose.model('DefaultUser', DefaultUserSchema);
 
 var setPasswordAndAuthenticate = function (user, passwordToSet, passwordToAuthenticate, cb) {
@@ -20,7 +20,7 @@ var setPasswordAndAuthenticate = function (user, passwordToSet, passwordToAuthen
   });
 };
 
-describe('passportLocalMongoose', function () {
+describe('passportEmail', function () {
   describe('#plugin()', function () {
     it('should add "username" field to model', function () {
       var user = new DefaultUser({
@@ -63,7 +63,7 @@ describe('passportLocalMongoose', function () {
 
     it('should allow overriding "username" field name', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'email'
       });
 
@@ -75,7 +75,7 @@ describe('passportLocalMongoose', function () {
 
     it('should allow overriding "salt" field name', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         saltField: 'passwordSalt'
       });
 
@@ -87,7 +87,7 @@ describe('passportLocalMongoose', function () {
 
     it('should allow overriding "hash" field name', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         saltField: 'passwordHash'
       });
 
@@ -99,7 +99,7 @@ describe('passportLocalMongoose', function () {
 
     it('should allow overriding "limitAttempts" option', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         limitAttempts: true
       });
 
@@ -111,7 +111,7 @@ describe('passportLocalMongoose', function () {
 
     it('should allow overriding "attempts" field name', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         limitAttempts: true,
         attemptsField: 'failures'
       });
@@ -132,21 +132,21 @@ describe('passportLocalMongoose', function () {
       var UserSchema = new Schema({
         username: usernameField
       });
-      UserSchema.plugin(passportLocalMongoose);
+      UserSchema.plugin(passportEmail);
 
       expect(UserSchema.path('username').options).to.deep.equal(usernameField);
     });
 
     it('should add "username" field to as unique model per default', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose);
+      UserSchema.plugin(passportEmail);
 
       assert.strictEqual(true, UserSchema.path('username').options.unique);
     });
 
     it('should add "username" field to as non unique if specified by option', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameUnique: false
       });
 
@@ -221,7 +221,7 @@ describe('passportLocalMongoose', function () {
   });
 
   describe('static #authenticate()', function () {
-    beforeEach(mongotest.prepareDb('mongodb://localhost/passportlocalmongoosetests'));
+    beforeEach(mongotest.prepareDb('mongodb://localhost/passportemailtests'));
     afterEach(mongotest.disconnect());
 
     it('should yield false with message option for authenticate', function (done) {
@@ -267,7 +267,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema();
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameLowerCase: true
       });
       var User = mongoose.model('AuthenticateWithCaseInsensitiveUsername', UserSchema);
@@ -294,7 +294,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema();
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'usernameNew',
         hashField: 'hashValue',
         saltField: 'saltValue'
@@ -349,7 +349,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         limitAttempts: true,
         interval: 20000
       }); // High initial value for test
@@ -415,7 +415,7 @@ describe('passportLocalMongoose', function () {
 
     it('should serialize existing user by username field override', function (done) {
       var UserSchema = new Schema();
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'email'
       });
       var User = mongoose.model('SerializeUserWithOverride', UserSchema);
@@ -433,7 +433,7 @@ describe('passportLocalMongoose', function () {
   });
 
   describe('static #deserializeUser()', function () {
-    beforeEach(mongotest.prepareDb('mongodb://localhost/passportlocalmongoosetests'));
+    beforeEach(mongotest.prepareDb('mongodb://localhost/passportemailtests'));
     afterEach(mongotest.disconnect());
 
     it('should define a static deserializeUser function for passport', function () {
@@ -462,7 +462,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema();
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'usernameOverride'
       });
       var User = mongoose.model('DeserializeUserWithOverride', UserSchema);
@@ -485,12 +485,12 @@ describe('passportLocalMongoose', function () {
   });
 
   describe('static #findByUsername()', function () {
-    beforeEach(mongotest.prepareDb('mongodb://localhost/passportlocalmongoosetests'));
+    beforeEach(mongotest.prepareDb('mongodb://localhost/passportemailtests'));
     afterEach(mongotest.disconnect());
 
     it('should define static findByUsername helper function', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('FindByUsernameDefined', UserSchema);
 
       assert.ok(User.findByUsername);
@@ -498,7 +498,7 @@ describe('passportLocalMongoose', function () {
 
     it('should retrieve saved user with findByUsername helper function', function (done) {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('FindByUsername', UserSchema);
 
       var user = new User({
@@ -520,7 +520,7 @@ describe('passportLocalMongoose', function () {
 
     it('should return a query object when no callback is specified', function (done) {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('FindByUsernameQueryObject', UserSchema);
 
       var user = new User({
@@ -551,7 +551,7 @@ describe('passportLocalMongoose', function () {
           required: true
         }
       });
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('FindByUsernameWithAllFields', UserSchema);
 
       var user = new User({
@@ -580,7 +580,7 @@ describe('passportLocalMongoose', function () {
           required: true
         }
       });
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         selectFields: 'username'
       });
       var User = mongoose.model('FindByUsernameWithSelectFieldsOption', UserSchema);
@@ -606,7 +606,7 @@ describe('passportLocalMongoose', function () {
 
     it('should retrieve saved user with findByUsername helper function with username field override', function (done) {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'usernameOverride'
       });
       var User = mongoose.model('FindByUsernameWithOverride', UserSchema);
@@ -632,7 +632,7 @@ describe('passportLocalMongoose', function () {
 
     it('should not throw if lowercase option is specified and no username is supplied', function (done) {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameLowerCase: true
       });
       var User = mongoose.model('FindByUsernameWithUndefinedUsername', UserSchema);
@@ -645,12 +645,12 @@ describe('passportLocalMongoose', function () {
   });
 
   describe('static #register()', function () {
-    beforeEach(mongotest.prepareDb('mongodb://localhost/passportlocalmongoosetests'));
+    beforeEach(mongotest.prepareDb('mongodb://localhost/passportemailtests'));
     afterEach(mongotest.disconnect());
 
     it('should define static register helper function', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterDefined', UserSchema);
 
       assert.ok(User.register);
@@ -660,7 +660,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterUser', UserSchema);
 
       User.register({
@@ -682,7 +682,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterDuplicateUser', UserSchema);
 
       User.register({
@@ -705,7 +705,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         iterations: 1
       }); // 1 iteration - safes time in tests
       var User = mongoose.model('RegisterAndAuthenticateUser', UserSchema);
@@ -730,7 +730,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         iterations: 1
       }); // 1 iteration - safes time in tests
       var User = mongoose.model('RegisterAndNotAuthenticateUser', UserSchema);
@@ -755,7 +755,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterExistingUser', UserSchema);
 
       var existingUser = new User({});
@@ -781,7 +781,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterUserWithoutUsername', UserSchema);
 
       User.register({}, 'password', function (err) {
@@ -794,7 +794,7 @@ describe('passportLocalMongoose', function () {
       this.timeout(5000); // Five seconds - mongo db access needed
 
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {});
+      UserSchema.plugin(passportEmail, {});
       var User = mongoose.model('RegisterUserWithoutPassword', UserSchema);
 
       User.register({
@@ -810,7 +810,7 @@ describe('passportLocalMongoose', function () {
   describe('static #createStrategy()', function () {
     it('should create strategy', function () {
       var UserSchema = new Schema({});
-      UserSchema.plugin(passportLocalMongoose, {
+      UserSchema.plugin(passportEmail, {
         usernameField: 'email'
       });
       var User = mongoose.model('CreateStrategy', UserSchema);

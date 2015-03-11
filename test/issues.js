@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var assert = require('assert');
-var passportLocalMongoose = require('../lib/passport-local-mongoose');
+var passportEmail = require('../lib/passport-email');
 var mongotest = require('./mongotest');
 
 describe('issues', function () {
-  beforeEach(mongotest.prepareDb('mongodb://localhost/passportlocalmongooseissues'));
+  beforeEach(mongotest.prepareDb('mongodb://localhost/passportemailissues'));
   afterEach(mongotest.disconnect());
 
   it('should support nested fields - Issue #9', function (done) {
@@ -20,7 +20,7 @@ describe('issues', function () {
       }
     });
 
-    UserSchema.plugin(passportLocalMongoose, {
+    UserSchema.plugin(passportEmail, {
       usernameField: 'account.username'
     });
     var User = mongoose.model('ShouldSupportNestedFields_Issue_9', UserSchema);
@@ -50,7 +50,7 @@ describe('issues', function () {
       age: Number
     });
 
-    UserSchema.plugin(passportLocalMongoose);
+    UserSchema.plugin(passportEmail);
     var User = mongoose.model('ShouldNotThrowIfPasswordOrSaltAreNotStored_Issue_27', UserSchema);
 
     User.create({
@@ -82,7 +82,7 @@ describe('issues', function () {
       age: Number
     });
 
-    UserSchema.plugin(passportLocalMongoose, {
+    UserSchema.plugin(passportEmail, {
       selectFields: 'name'
     });
     var User = mongoose.model('ShouldNotThrowIfPasswordAndSaltAreNotSelected_Issue_27', UserSchema);
@@ -122,7 +122,7 @@ describe('issues', function () {
       }]
     });
 
-    UserSchema.plugin(passportLocalMongoose, {
+    UserSchema.plugin(passportEmail, {
       populateFields: 'logins'
     });
     var User = mongoose.model('ShouldPopulateFields_Issue_20', UserSchema);
