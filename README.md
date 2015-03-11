@@ -2,7 +2,7 @@
 Passport-Local Mongoose is a [Mongoose](http://mongoosejs.com/) [plugin](http://mongoosejs.com/docs/plugins.html) 
 that simplifies building username and password login with [Passport](http://passportjs.org).
 
-[![Build Status](https://travis-ci.org/saintedlama/passport-local-mongoose.png?branch=master)](https://travis-ci.org/saintedlama/passport-local-mongoose)
+[![Build Status](https://travis-ci.org/zkochan/passport-email.png?branch=master)](https://travis-ci.org/zkochan/passport-email)
 [![Coverage Status](https://coveralls.io/repos/saintedlama/passport-local-mongoose/badge.png?branch=master)](https://coveralls.io/r/saintedlama/passport-local-mongoose?branch=master)
 
 ## Tutorials
