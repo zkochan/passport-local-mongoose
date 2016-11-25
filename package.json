@@ -19,15 +19,15 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "chai": "^1.10.0",
+    "chai": "^3.5.0",
     "gulp": "^3.8.8",
     "gulp-clean": "^0.3.1",
     "gulp-docco": "0.0.4",
     "gulp-exec": "^2.1.0",
-    "gulp-load-plugins": "^0.6.0",
-    "gulp-mocha": "^1.1.0",
-    "mocha": "^1.21.4",
-    "mongoose": "^3.8.16"
+    "gulp-load-plugins": "^1.4.0",
+    "gulp-mocha": "^3.0.1",
+    "mocha": "^3.2.0",
+    "mongoose": "^4.7.0"
   },
   "scripts": {
     "test": "mocha -R spec test/",
